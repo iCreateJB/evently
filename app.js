@@ -1,16 +1,10 @@
 var express = require('express');
 var app     = express();
-var redis   = require('redis');
-    client  = redis.createClient(process.env['REDIS_PORT'],process.env['REDIS_HOST']);
-    client.auth(process.env['REDIS_AUTH_PASS']);
-    
-    client.on("error", function (err) {
-      console.log("error event - " + client.host + ":" + client.port + " - " + err);
-    });
+var redis   = require('redis-url').connect(process.env.REDISTOGO_URL);
 
 app.set('json spaces',0)
 app.get('/', function(req,res) {
-  client.set("galileo:ip:"+req.connection.remoteAddress, req.connection.remoteAddress, redis.print);
+  redis.set("galileo:ip:"+req.connection.remoteAddress, req.connection.remoteAddress);
   res.json({ip: req.connection.remoteAddress});
 });
 
