@@ -1,0 +1,8 @@
+{
+  "name": "jb-galieo",
+  "description": "sample node api",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~3.4.4"
+  }
+}
