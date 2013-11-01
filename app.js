@@ -9,7 +9,7 @@ var redis   = require('redis');
 
 app.set('json spaces',0)
 app.get('/', function(req,res) {
-  client.set("galileo:ip", req.connection.remoteAddress, redis.print);
+  client.set("galileo:ip:"+req.connection.remoteAddress, req.connection.remoteAddress, redis.print);
   res.json({ip: req.connection.remoteAddress});
 });
 
