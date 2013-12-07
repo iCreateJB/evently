@@ -2,16 +2,31 @@ var express = require('express');
 var app     = express();
 var redis   = require('redis-url').connect(process.env.REDISTOGO_URL);
 var moment  = require('moment');
+var url     = require('url');
+
+var entries = []
 
 app.set('json spaces',0)
 app.get('/', function(req,res) {
-  redis.set("galileo:ip:"+getIp(req)+":"+timestamp(), getIp(req));
-  redis.sadd("galileo:ip:"+getIp(req),"galileo:ip:"+getIp(req)+":"+timestamp());
-  res.json({ip: getIp(req)});
+  var parts = url.parse(req.url, true);
+  var query = parts.query;
+  if (query['ip']){
+    redis.smembers("galileo:ip:"+query['ip'], function(err,data){
+      res.json({ count: data.length, ip: query['ip'], data: data})
+    })
+  }else{
+    redis.set("galileo:ip:"+getIp(req)+":"+timestamp(), getIp(req));
+    redis.sadd("galileo:ip:"+getIp(req),"galileo:ip:"+getIp(req)+":"+timestamp());
+    res.json({ip: getIp(req)});
+  }
 });
 
+function report(entries,data,ipAddress){
+  
+}
+
 function timestamp(){
-  return moment().format('YYYY-MM-DD');
+  return moment().format('YYYY-MM-DDTHH:mm:ssZ');
 }
 
 function getIp(req){
