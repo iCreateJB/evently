@@ -3,6 +3,7 @@
   "description": "sample node api",
   "version": "0.0.1",
   "dependencies": {
-    "express": "~3.4.4"
+    "express": "~3.4.4",
+    "redis-url": "~0.2.0"
   }
 }
