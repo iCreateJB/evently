@@ -11,7 +11,7 @@ app.get('/', function(req,res) {
   var parts = url.parse(req.url, true);
   var query = parts.query;
   if (query['ip']){
-    redis.smembers("galileo:ip:"+query['ip'], function(err,data){
+    redis.sort("galileo:ip:"+query['ip'],"ALPHA", function(err,data){
       res.json({ count: data.length, ip: query['ip'], data: data})
     })
   }else{
