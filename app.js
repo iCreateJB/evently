@@ -3,6 +3,7 @@ var app     = express();
 var redis   = require('redis-url').connect(process.env.REDISTOGO_URL);
 var moment  = require('moment');
 var url     = require('url');
+var newrelic= require('newrelic');
 
 var entries = []
 
