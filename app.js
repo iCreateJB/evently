@@ -22,6 +22,11 @@ app.get('/', function(req,res) {
   }
 });
 
+app.get('/ping', function(req,res){
+  status = redis.ping();
+  res.json({status: status == true ? 'Ok' : 'Down'})
+})
+
 function report(entries,data,ipAddress){
   
 }
