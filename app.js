@@ -3,6 +3,7 @@ var app     = express();
 var redis   = require('redis-url').connect(process.env.REDISTOGO_URL);
 var moment  = require('moment');
 var url     = require('url');
+var _und    = require('underscore');
 var newrelic= require('newrelic');
 
 var entries = []
@@ -12,12 +13,13 @@ app.get('/', function(req,res) {
   var parts = url.parse(req.url, true);
   var query = parts.query;
   if (query['ip']){
-    redis.sort("galileo:ip:"+query['ip'],"ALPHA", function(err,data){
+    // SORT '127.0.0.1' ASC ALPHA
+    redis.sort(query['ip'],"ALPHA", function(err,data){
       res.json({ count: data.length, ip: query['ip'], data: data})
     })
   }else{
-    redis.set("galileo:ip:"+getIp(req)+":"+timestamp(), getIp(req));
-    redis.sadd("galileo:ip:"+getIp(req),"galileo:ip:"+getIp(req)+":"+timestamp());
+    redis.set(getIp(req)+":"+timestamp(), getIp(req));
+    redis.sadd(getIp(req),getIp(req)+":"+timestamp());
     res.json({ip: getIp(req)});
   }
 });
@@ -28,11 +30,16 @@ app.get('/ping', function(req,res){
 })
 
 function report(entries,data,ipAddress){
-  
+
 }
 
 function timestamp(){
-  return moment().format('YYYY-MM-DDTHH:mm:ssZ');
+  // > moment().unix()
+  // 1402531523
+  // > moment().valueOf(moment().unix())
+  // 1402531537034
+  // > moment(1402531537034).format('MM/DD/YYYY')
+  return moment().valueOf(moment().unix())
 }
 
 function getIp(req){
