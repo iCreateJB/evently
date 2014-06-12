@@ -15,7 +15,9 @@ app.get('/', function(req,res) {
   if (query['ip']){
     // SORT '127.0.0.1' ASC ALPHA
     redis.sort(query['ip'],"ALPHA", function(err,data){
-      res.json({ count: data.length, ip: query['ip'], data: data})
+      var request = [];
+      _und.each(data, function(i){ request.push(_und.object(['ip','timestamp'], i.split(':'))) });
+      res.json({ count: data.length, ip: query['ip'], data: _und.pluck(request,'timestamp') })
     })
   }else{
     redis.set(getIp(req)+":"+timestamp(), getIp(req));
