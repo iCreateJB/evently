@@ -6,34 +6,40 @@ var url     = require('url');
 var _und    = require('underscore');
 var newrelic= require('newrelic');
 
-var entries = []
+app.configure('development',function(){
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser());
+})
 
-app.set('json spaces',0)
-app.get('/', function(req,res) {
-  var parts = url.parse(req.url, true);
-  var query = parts.query;
-  if (query['ip']){
-    // SORT '127.0.0.1' ASC ALPHA
-    redis.sort(query['ip'],"ALPHA", function(err,data){
-      var request = [];
-      _und.each(data, function(i){ request.push(_und.object(['ip','timestamp'], i.split(':'))) });
-      res.json({ count: data.length, ip: query['ip'], data: _und.pluck(request,'timestamp') })
-    })
-  }else{
-    redis.set(getIp(req)+":"+timestamp(), getIp(req));
-    redis.sadd(getIp(req),getIp(req)+":"+timestamp());
-    res.json({ip: getIp(req)});
-  }
+app.configure('production',function(){
+  app.set('json spaces',0)
+})
+
+app.use(function(req,res,next){
+  redis.set(getIp(req)+":"+timestamp(), getIp(req));
+  redis.sadd(getIp(req),getIp(req)+":"+timestamp());
+  next();
+})
+
+app.post('/', function(req,res) {
+  res.json({ip: req.params.ip})
 });
+
+app.get('/ip/:ip', function(req,res){
+  // var parts = url.parse(req.url, true);
+  // var query = parts.query;
+  // SORT '127.0.0.1' ASC ALPHA
+  redis.sort(req.params.ip,"ALPHA", function(err,data){
+    var request = [];
+    _und.each(data, function(i){ request.push(_und.object(['ip','timestamp'], i.split(':'))) });
+    res.json({ count: data.length, ip: req.params.ip, data: _und.pluck(request,'timestamp') })
+  })
+})
 
 app.get('/ping', function(req,res){
   status = redis.ping();
   res.json({status: status == true ? 'Ok' : 'Down'})
 })
-
-function report(entries,data,ipAddress){
-
-}
 
 function timestamp(){
   // > moment().unix()
