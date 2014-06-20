@@ -16,8 +16,10 @@ app.configure('production',function(){
 })
 
 app.use(function(req,res,next){
-  redis.set(getIp(req)+":"+timestamp(), getIp(req));
-  redis.sadd(getIp(req),getIp(req)+":"+timestamp());
+  if (req.method == 'POST'){
+    redis.set(getIp(req)+":"+timestamp(), getIp(req));
+    redis.sadd(getIp(req),getIp(req)+":"+timestamp());
+  }
   next();
 })
 
