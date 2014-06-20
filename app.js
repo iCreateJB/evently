@@ -12,6 +12,7 @@ app.configure('development',function(){
 })
 
 app.configure('production',function(){
+  app.enable('trust proxy');
   app.set('json spaces',0)
 })
 
@@ -24,7 +25,7 @@ app.use(function(req,res,next){
 })
 
 app.post('/', function(req,res) {
-  res.json({ip: req.params.ip})
+  res.json({status: 'Ok'})
 });
 
 app.get('/ip/:ip', function(req,res){
