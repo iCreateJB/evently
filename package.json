@@ -6,6 +6,7 @@
     "express": "~3.4.4",
     "redis-url": "~0.2.0",
     "moment": "~2.4.0",
-    "newrelic": "~1.2.0"
+    "newrelic": "~1.2.0",
+    "async": ">= 0.0.0"
   }
 }
