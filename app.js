@@ -1,6 +1,7 @@
 var express = require('express'),
     app     = express(),
-    Hermes  = require('./lib/hermes.js');
+    Hermes  = require('./lib/hermes.js'),
+    Auth    = require('./lib/auth.js');
 
 app.use(express.bodyParser());
 
@@ -15,24 +16,40 @@ app.configure('production',function(){
 })
 
 app.use(function(req,res,next){
-  Hermes.authenticate(req,res,next);
+  if (req.path == '/ping') next();
+  if (req.path == '/' && req.method == 'GET') next();
+  new Auth.authenticate(req,res,next);
   res.on('error', function(e) {
     return console.error(e);
   });
 })
 
 app.post('/', function(req,res) {
-  if (req.method == 'POST'){
-    var _event = new Hermes(req);
-        _event.create(res);
-  }else{
-    res.json({status: 'Error', message: 'Invalid Request Type.'},406)
-  }
+    new Hermes.create(req,res);
 });
 
-app.get('/ip/:ip', function(req,res){
-  var _events = new Hermes(req);
-      _events.get(res);
+app.get('/',function(req,res){
+  res.json({status: 'Error', message: 'Invalid Request Type.'},406)
+})
+
+app.get('/recent/:app_id',function(req,res){
+  // new Hermes.get(req,res,'recent')
+})
+
+app.get('/activity/:app_id',function(req,res){
+  // new Hermes.get(req,res,'activity')
+})
+
+app.get('/apps',function(req,res){
+  // new Hermes.get(req,res,'apps')
+})
+
+app.get('/event/:event_id',function(req,res){
+  new Hermes.findByEventId(req,res)
+})
+
+app.get('/type',function(req,res){
+  // new Hermes.get(req,res,'status')
 })
 
 app.get('/ping', function(req,res){
@@ -40,3 +57,5 @@ app.get('/ping', function(req,res){
 })
 
 app.listen(process.env.PORT || 5000);
+
+module.exports = app;
