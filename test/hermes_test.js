@@ -6,7 +6,8 @@ var expect = require("chai").expect,
    request = require('supertest'),
      sinon = require('sinon'),
      redis = require('../lib/db.js'),
-       app = require('../app.js');
+       app = require('../app.js')
+   async   = require('async');
 
   user = {
     email: 'info@hermes.io',
@@ -15,7 +16,7 @@ var expect = require("chai").expect,
     }
   }
 
-describe ('[Request] findByEventId',function(){
+describe('[Request] findByEventId',function(){
   var response, getResponse
   before(function(done){
     redis.hmset( 'user:info@hermes.io', 'data', JSON.stringify(user), function(err,res){})
@@ -35,7 +36,6 @@ describe ('[Request] findByEventId',function(){
           .set('Accept','application/json')
           .end(function(req_2,res_2){
             getResponse = res_2.body.data
-            getResponse.event_id = response.data.event_id
             done();
           })
       });
@@ -48,4 +48,44 @@ describe ('[Request] findByEventId',function(){
   it('has key [:params]',function(){ getResponse.should.have.property('params') })
   it('has key [:status]',function(){ getResponse.should.have.property('status') })
   it('has key [:timestamp]',function(){ getResponse.should.have.property('timestamp') })
+})
+
+describe('[Request] activity',function(){
+  var getReq, getRes
+  before(function(done){
+    redis.hmset( 'user:info@hermes.io', 'data', JSON.stringify(user), function(err,res){})
+    redis.sadd('api_key:2a246359-6b80-47eb-85fe-124c5c4bca40','user:info@hermes.io',function(err,res){})
+    redis.sadd('app_id:a6e1a32a-2f19-4751-990a-298f3b1f2ce22','user:info@hermes.io',function(err,res){})
+
+    request(app).post('/')
+      .set('Authorization', '2a246359-6b80-47eb-85fe-124c5c4bca40')
+      .set('Content-Type','application/json')
+      .set('Accept','application/json')
+      .send({ app_id: 'a6e1a32a-2f19-4751-990a-298f3b1f2ce22', messageDetail: 'This is a test [:error]', messageType: 'Error' })
+      .end(function(err, res){
+        if (err) throw err;
+        request(app).post('/')
+          .set('Authorization', '2a246359-6b80-47eb-85fe-124c5c4bca40')
+          .set('Content-Type','application/json')
+          .set('Accept','application/json')
+          .send({ app_id: 'a6e1a32a-2f19-4751-990a-298f3b1f2ce22', messageDetail: 'This is a test [:debug]', messageType: 'Debug' })
+          .end(function(err, res){
+            if (err) throw err;
+            request(app).get('/activity?app_id='+res.body.data.app_id)
+              .set('Authorization', '2a246359-6b80-47eb-85fe-124c5c4bca40')
+              .set('Content-Type','application/json')
+              .set('Accept','application/json')
+              .end(function(request,response){
+                getRes = response.body
+                done();
+              })
+        })
+      })
+  })
+
+  it('has key [:count]',function(){ getRes.should.have.property('count') })
+  it('has a size of [2]',function(){ getRes.count.should.be.equal(2) })
+  it('has key [:data]',function(){ getRes.should.have.property('data') })
+  it('should be an array',function(){ getRes.data.should.be.instanceof(Array) })
+  it('event has different timestamp',function(){ getRes.data[0].timestamp.should.not.be.equal(getRes.data[1].timestamp)})
 })
