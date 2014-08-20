@@ -36,8 +36,8 @@ app.get('/recent/:app_id',function(req,res){
   // new Hermes.get(req,res,'recent')
 })
 
-app.get('/activity/:app_id',function(req,res){
-  // new Hermes.get(req,res,'activity')
+app.get('/activity',function(req,res){
+  new Hermes.activity(req,res)
 })
 
 app.get('/apps',function(req,res){
