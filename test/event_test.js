@@ -59,8 +59,6 @@ describe('Event Response #create',function(){
 describe('Event Response #create [Error]',function(){
   var reqError
   before(function(done){
-    // reqError.ip = null;
-    // reqError    = event.create();
     done();
   })
   it('should raise error');
