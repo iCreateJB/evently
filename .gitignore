@@ -1,1 +1,4 @@
-./newrelic_agent.log
+newrelic_agent.log
+scratch.txt
+dump.rdb
+create_user.js
