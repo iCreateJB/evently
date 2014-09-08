@@ -32,16 +32,8 @@ app.get('/',function(req,res){
   res.json({status: 'Error', message: 'Invalid Request Type.'},406)
 })
 
-app.get('/recent/:app_id',function(req,res){
-  // new Hermes.get(req,res,'recent')
-})
-
 app.get('/activity',function(req,res){
   new Hermes.activity(req,res)
-})
-
-app.get('/apps',function(req,res){
-  // new Hermes.get(req,res,'apps')
 })
 
 app.get('/event/:event_id',function(req,res){
@@ -49,7 +41,7 @@ app.get('/event/:event_id',function(req,res){
 })
 
 app.get('/type',function(req,res){
-  // new Hermes.get(req,res,'status')
+  new Hermes.type(req,res)
 })
 
 app.get('/ping', function(req,res){
