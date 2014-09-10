@@ -1,9 +1,12 @@
 var express = require('express'),
     app     = express(),
+    admin   = express(),
     Hermes  = require('./lib/hermes.js'),
     Auth    = require('./lib/auth.js');
 
 app.use(express.bodyParser());
+
+app.use('/admin', admin);
 
 app.configure('development',function(){
   app.use(express.logger('dev'));
@@ -16,9 +19,10 @@ app.configure('production',function(){
 })
 
 app.use(function(req,res,next){
-  if (req.path == '/ping') next();
-  if (req.path == '/' && req.method == 'GET') next();
-  new Auth.authenticate(req,res,next);
+  // if (req.path == '/ping') next();
+  // if (req.path == '/' && req.method == 'GET') next();
+  // new Auth.authenticate(req,res,next);
+  next();
   res.on('error', function(e) {
     return console.error(e);
   });
@@ -46,6 +50,14 @@ app.get('/type',function(req,res){
 
 app.get('/ping', function(req,res){
   Hermes.status(req,res)
+})
+
+admin.post('/user',function(req,res){
+  res.json({ status: 'Ok'})
+})
+
+admin.post('/app', function(req,res){
+  res.json({ status: 'Ok'})
 })
 
 app.listen(process.env.PORT || 5000);
