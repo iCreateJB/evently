@@ -2,11 +2,10 @@ var express = require('express'),
     app     = express(),
     admin   = express(),
     Hermes  = require('./lib/hermes.js'),
-    Auth    = require('./lib/auth.js');
+    Auth    = require('./lib/auth.js'),
+    AdminService   = require('./lib/admin_service.js');
 
 app.use(express.bodyParser());
-
-app.use('/admin', admin);
 
 app.configure('development',function(){
   app.use(express.logger('dev'));
@@ -18,11 +17,12 @@ app.configure('production',function(){
   app.set('json spaces',0)
 })
 
+app.use('/admin', admin);
+
 app.use(function(req,res,next){
-  // if (req.path == '/ping') next();
-  // if (req.path == '/' && req.method == 'GET') next();
-  // new Auth.authenticate(req,res,next);
-  next();
+  if (req.path == '/ping') next();
+  if (req.path == '/' && req.method == 'GET') next();
+  new Auth.authenticate(req,res,next);
   res.on('error', function(e) {
     return console.error(e);
   });
@@ -53,7 +53,7 @@ app.get('/ping', function(req,res){
 })
 
 admin.post('/user',function(req,res){
-  res.json({ status: 'Ok'})
+  AdminService.createUser(req,res)
 })
 
 admin.post('/app', function(req,res){
