@@ -49,11 +49,11 @@ app.get('/type',function(req,res){
 })
 
 app.get('/ping', function(req,res){
-  Hermes.status(req,res)
+  new Hermes.status(req,res)
 })
 
 admin.post('/user',function(req,res){
-  AdminService.createUser(req,res)
+  new AdminService.createUser(req,res)
 })
 
 admin.post('/app', function(req,res){
