@@ -1,12 +1,4 @@
-process.env.NODE_ENV = 'test'
-
-var expect = require("chai").expect,
-    assert = require("assert"),
-    should = require("should"),
-   request = require('supertest'),
-     sinon = require('sinon'),
-     redis = require('../lib/db.js'),
-       app = require('../app.js');
+  var app = require('../app.js');
 
   user = {
     email: 'info@hermes.io',

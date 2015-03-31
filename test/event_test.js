@@ -1,12 +1,4 @@
-process.env.NODE_ENV = 'test'
-
-var expect = require("chai").expect,
-    assert = require("assert"),
-    should = require("should"),
-     sinon = require('sinon'),
-     uuid  = require('node-uuid'),
-     redis = require('../lib/db.js'),
-     Event = require('../lib/event.js');
+  var Event = require('../lib/event.js');
 
   var event
   var app_id = uuid.v4()
