@@ -60,6 +60,10 @@ admin.post('/app', function(req,res){
   res.json({ status: 'Ok'})
 })
 
+admin.get('/user/:user_id',function(req,res){
+  new AdminService.getUser(req,res)
+})
+
 app.listen(process.env.PORT || 5000);
 
 module.exports = app;
