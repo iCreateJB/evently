@@ -148,7 +148,7 @@ describe('[AdminService] getUser invalid', function(){
       });
   })
 
-  it('[200]',function(){ getResponse.status.should.equal(400) })
+  it('[400]',function(){ getResponse.status.should.equal(400) })
 
   it('[:status]',function(){ getResponse.body.status.should.equal('Error') })
   it('[:detail]',function(){ getResponse.body.detail.should.equal('User Invalid')})
