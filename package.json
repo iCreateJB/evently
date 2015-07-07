@@ -7,9 +7,18 @@
     "redis-url": "~0.2.0",
     "moment": "~2.4.0",
     "newrelic": "~1.2.0",
-    "async": ">= 0.0.0"
+    "async": ">= 0.0.0",
+    "hiredis": ">= 0.1.15",
+    "node-uuid": ">= 1.4.1",
+    "underscore": ">= 1.6.0"
   },
   "devDependencies": {
-    "should": "^4.0.4"
+    "should": "^4.0.4",
+    "fakeredis": ">= 0.2.0",
+    "chai": ">=1.9.1",
+    "assert": ">= 1.1.1",
+    "sinon": ">= 1.10.3",
+    "mocha": ">= 2.0.1",
+    "supertest": ">= 0.13.0"
   }
 }
